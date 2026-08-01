@@ -117,7 +117,7 @@
       <div class="step">
         <span class="numeral">IV</span>
         <h4>The Handover</h4>
-        <p>Scaffolding down, floors polished, glass gleaming, keys back in your hand. Moved-in ready, to the day &mdash; then Karl leaves you to enjoy it.</p>
+        <p>Scaffolding down, floors polished, glass gleaming, keys back in your hand. Moved-in ready, to the day.</p>
       </div>
     </div>
   </div>
@@ -263,19 +263,32 @@
     } catch (e) { }
   }
 
-  // One continuous bar across every clip in the running cycle, so a visitor
-  // can see the film is only part-way through and more is coming.
+  // ONE bar across the entire loop — every clip of every transformation, not
+  // per cycle. It fills once from the tired house through to the last finish,
+  // so a visitor can see how much film is still to come.
   // Display only: no control surface, pointer-events off, never a play button.
   function buildProgress() {
     if (!progress) return;
     progress.innerHTML = '<i></i>';
   }
 
+  function totalClips() {
+    var n = 0;
+    for (var i = 0; i < cycles.length; i++) n += cycles[i].length;
+    return n;
+  }
+
+  function clipsBefore(ci) {
+    var n = 0;
+    for (var i = 0; i < ci; i++) n += cycles[i].length;
+    return n;
+  }
+
   function paintProgress() {
-    if (!progress || !progress.firstChild) return;
-    var total = cycles[cycleIndex].length;
+    if (!progress || !progress.firstChild || !cycles.length) return;
+    var total = totalClips();
     var within = (video.duration && isFinite(video.duration)) ? video.currentTime / video.duration : 0;
-    var frac = (clipIndex + Math.min(within, 1)) / total;
+    var frac = (clipsBefore(cycleIndex) + clipIndex + Math.min(within, 1)) / total;
     progress.firstChild.style.width = (Math.min(Math.max(frac, 0), 1) * 100) + '%';
   }
 
@@ -287,7 +300,8 @@
     holdDeadline = 0;
     cycleIndex = (cycleIndex + 1) % cycles.length;
     clipIndex = 0;
-    buildProgress();
+    // Deliberately no rebuild — the bar runs continuously across all cycles
+    // and only returns to zero when the whole loop starts again.
     play();
   }
 
@@ -353,14 +367,11 @@
   });
 
   // Openings left this year — Lee/Karl updates this one number as jobs book.
-  var OPENINGS_LEFT = 2;
+  // Booking status — edit these two as the diary fills.
+  var BOOKED_YEAR = 2026;
+  var OPEN_YEAR = 2027;
   var on = document.getElementById('openingsNote');
-  if (on) {
-    on.textContent = OPENINGS_LEFT === 1
-      ? 'One opening left in 2026'
-      : OPENINGS_LEFT + ' openings left in 2026';
-    if (OPENINGS_LEFT === 2) on.textContent = 'Two openings left in 2026';
-  }
+  if (on) on.textContent = BOOKED_YEAR + ' fully booked — limited slots for ' + OPEN_YEAR;
 
   // The postcode whisper — the site recognises its own town.
   var pcIn = document.getElementById('pcInput');
