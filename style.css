@@ -102,6 +102,42 @@ video::-webkit-media-controls-overlay-play-button {
   transition: width .25s linear;
 }
 
+/* Commission No. 1 — a real Karl Gardner job, on the Work page */
+.own-job { padding: 70px 6vw 10px; text-align: center; }
+.own-job .kicker {
+  font-size: 12px; letter-spacing: .34em; text-transform: uppercase;
+  color: var(--gold); font-weight: 600;
+}
+.own-job h2 {
+  margin-top: 16px; font-weight: 400;
+  font-family: Didot, Georgia, 'Times New Roman', serif;
+  font-size: clamp(28px, 3.6vw, 48px); letter-spacing: .01em;
+}
+.own-job-note {
+  margin: 16px auto 0; max-width: 52ch;
+  color: rgba(247,245,241,.6); font-size: 14.5px; line-height: 1.7;
+}
+.own-job-frame {
+  position: relative; margin: 42px auto 0; max-width: 1000px;
+  border-radius: 3px; overflow: hidden; background: #0b0e11;
+}
+.own-job-frame video {
+  display: block; width: 100%; height: auto;
+  opacity: 0; transition: opacity .4s linear;
+}
+.own-job-frame video.qs-playing { opacity: 1; }
+.own-job-frame .qs-noplay-still {
+  position: absolute; inset: 0; background: center/cover no-repeat;
+}
+.own-job-progress {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
+  background: rgba(247,245,241,.22); pointer-events: none;
+}
+.own-job-progress i {
+  display: block; height: 100%; width: 0;
+  background: var(--gold); transition: width .25s linear;
+}
+
 /* Work page */
 .page-head { padding: 34px 6vw 0; display: flex; justify-content: space-between; align-items: center; }
 .page-head a {

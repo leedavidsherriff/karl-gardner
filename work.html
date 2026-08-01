@@ -19,6 +19,20 @@
   <a class="gold" href="./index.html#collection">The Collection</a>
 </div>
 
+<section class="own-job">
+  <div class="kicker">Commission No. 1</div>
+  <h2>A real one, rebuilt on film.</h2>
+  <p class="own-job-note">One of Karl&rsquo;s own completed extensions &mdash; the finished room is exactly as he handed it over.</p>
+  <div class="own-job-frame">
+    <video id="ownJobVideo" muted playsinline preload="metadata"
+           disablepictureinpicture disableremoteplayback
+           controlslist="nodownload noplaybackrate noremoteplayback"
+           data-src="./media/karl-own-job.mp4" data-src-m="./media/m/karl-own-job.mp4"
+           poster="./media/poster-own-job.jpg"></video>
+    <div class="own-job-progress" id="ownJobProgress" aria-hidden="true"><i></i></div>
+  </div>
+</section>
+
 <section class="board">
   <div class="kicker">The work</div>
   <h2>Watch a whole house get its glow-up.</h2>
@@ -48,6 +62,68 @@
 <footer>Karl Gardner &middot; Porthcawl &middot; Built proper. Priced right.</footer>
 
 <script>
+// Commission No. 1 — plays, holds on the finished room, then runs again.
+// Display only: no controls, no play button, poster stands in if blocked.
+(function () {
+  var HOLD_MS = 8000;
+  var v = document.getElementById('ownJobVideo');
+  var bar = document.getElementById('ownJobProgress');
+  if (!v) return;
+
+  v.src = v.getAttribute(window.matchMedia('(max-width: 768px)').matches ? 'data-src-m' : 'data-src');
+
+  v.addEventListener('playing', function () {
+    v.__everPlayed = true;
+    v.classList.add('qs-playing');
+  });
+
+  function still() {
+    if (v.__everPlayed || v.__fellBack) return;
+    v.__fellBack = true;
+    var d = document.createElement('div');
+    d.className = 'qs-noplay-still';
+    d.style.backgroundImage = 'url("' + v.getAttribute('poster') + '")';
+    v.parentElement.insertBefore(d, v);
+  }
+
+  v.addEventListener('timeupdate', function () {
+    if (bar && bar.firstChild && v.duration) {
+      bar.firstChild.style.width = Math.min(100, (v.currentTime / v.duration) * 100) + '%';
+    }
+  });
+
+  v.addEventListener('ended', function () {
+    if (bar && bar.firstChild) bar.firstChild.style.width = '100%';
+    setTimeout(function () {
+      v.currentTime = 0;
+      v.play().catch(function () {});
+    }, HOLD_MS);
+  });
+
+  // Only start once it is actually on screen.
+  function start() {
+    var p = v.play();
+    if (p) p.catch(still);
+    setTimeout(function () { if (!v.__everPlayed) still(); }, 1800);
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { start(); io.disconnect(); } });
+    }, { threshold: 0.25 });
+    io.observe(v);
+  } else { start(); }
+
+  ['pointerdown', 'touchstart', 'keydown'].forEach(function (evt) {
+    document.addEventListener(evt, function () {
+      if (v.__everPlayed) return;
+      var s = v.parentElement.querySelector('.qs-noplay-still');
+      if (s) s.remove();
+      v.__fellBack = false;
+      v.play().catch(function () {});
+    }, { passive: true });
+  });
+})();
+
 (function () {
   var box = document.getElementById('compare');
   var wrap = document.getElementById('beforeWrap');
