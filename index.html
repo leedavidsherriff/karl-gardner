@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Karl Gardner — Porthcawl's Builder</title>
+<meta name="description" content="The best builder in Porthcawl, many say. Premium extensions with huge sliding glass and one seamless floor, inside and out. Twelve commissions a year.">
+<meta property="og:title" content="Karl Gardner — The best builder in Porthcawl, many say.">
+<meta property="og:description" content="Premium extensions with huge sliding glass and one seamless floor, inside and out. Twelve commissions a year.">
+<meta property="og:image" content="./media/og.jpg">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<section class="hero" id="top">
+  <div class="hero-media">
+    <video id="heroVideo" muted playsinline preload="auto"
+           disablepictureinpicture disableremoteplayback
+           controlslist="nodownload noplaybackrate noremoteplayback"
+           poster="./media/poster.jpg"></video>
+    <canvas class="hero-freeze" id="heroFreeze" aria-hidden="true"></canvas>
+    <audio id="ambience" loop preload="none" src="./media/ambience.m4a"></audio>
+  </div>
+  <div class="hero-fallback" id="heroFallback"></div>
+  <div class="hero-scrim"></div>
+
+  <nav class="top-nav">
+    <a class="brand" href="./index.html">Karl Gardner &middot; Porthcawl</a>
+    <a class="navlink" href="./work.html">The Work</a>
+  </nav>
+
+  <button type="button" class="sound-toggle is-muted" id="soundToggle" aria-label="Tap for sound">
+    <span class="dot"></span><span>Tap for sound</span>
+  </button>
+
+  <div class="hero-copy">
+    <div class="kicker">Karl Gardner &middot; Porthcawl</div>
+    <h1>The best builder in Porthcawl, many say.</h1>
+    <p>What do you think?</p>
+    <a class="btn" href="#collection">See for yourself</a>
+  </div>
+</section>
+
+<section class="collection" id="collection">
+  <div class="kicker">The Collection</div>
+  <h2>Three ways to do it properly.</h2>
+  <p class="ethos">A Karl Gardner extension is never the cheapest way to add a room. It is the best one. Every build is priced honestly, finished completely, and made to outlast the mortgage.</p>
+
+  <div class="models">
+    <a class="model" href="./the-anthracite.html">
+      <div class="frame"><img src="./media/stills/S3-glowup-dusk.jpg" alt="The Anthracite — white render extension with anthracite sliding glass at dusk"></div>
+      <h3>The Anthracite</h3>
+      <div class="line"></div>
+      <p class="desc">Crisp white render, three anthracite-framed sliding panels, and one porcelain floor running from kitchen to patio.</p>
+      <ul class="specs">
+        <li>Floor-to-roof sliding glass</li>
+        <li>Seamless inside-out porcelain</li>
+        <li>Whole-house render &amp; windows</li>
+      </ul>
+      <p class="price">From &pound;85,000<small>complete, no surprises</small></p>
+      <span class="discover">Discover</span>
+    </a>
+
+    <a class="model" href="./the-bronze.html">
+      <div class="frame"><img src="./media/stills/V1-brick-bronze.jpg" alt="The Bronze — charcoal brick extension with bronze-framed glass"></div>
+      <h3>The Bronze</h3>
+      <div class="line"></div>
+      <p class="desc">Charcoal brick laid on steel, bronze-anodised frames, and warm sand porcelain flowing out to meet the lawn.</p>
+      <ul class="specs">
+        <li>Bronze-anodised glazing</li>
+        <li>Charcoal brick on steel</li>
+        <li>Whole-house render &amp; windows</li>
+      </ul>
+      <p class="price">From &pound;115,000<small>complete, no surprises</small></p>
+      <span class="discover">Discover</span>
+    </a>
+
+    <a class="model" href="./the-corner.html">
+      <div class="frame"><img src="./media/stills/V2-glass-corner.jpg" alt="The Corner — frameless structural glass corner open to the sea"></div>
+      <h3>The Corner</h3>
+      <div class="line"></div>
+      <p class="desc">Two walls of frameless structural glass meeting at an open corner, no post, nothing between the kitchen and the sea.</p>
+      <ul class="specs">
+        <li>Frameless structural glass</li>
+        <li>Open corner, no post</li>
+        <li>Cantilevered flat roof</li>
+      </ul>
+      <p class="price">Price on application<small>one built per year</small></p>
+      <span class="discover">Discover</span>
+    </a>
+  </div>
+
+  <div class="commission" id="commission">
+    <div class="commission-head">
+      <div class="kicker">The Commission</div>
+      <h2>How a Karl Gardner build happens.</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <span class="numeral">I</span>
+        <h4>The Walk-Round</h4>
+        <p>Karl comes to your house and walks it with you. An hour of straight talk about what your home could be &mdash; no salesman, no pressure. It is always Karl.</p>
+      </div>
+      <div class="step">
+        <span class="numeral">II</span>
+        <h4>The Film</h4>
+        <p>Before a brick is laid, you watch your own house transform &mdash; your walls, your garden, your view, rebuilt on film. You approve what you have already seen finished.</p>
+      </div>
+      <div class="step">
+        <span class="numeral">III</span>
+        <h4>The Build</h4>
+        <p>One commission at a time. Dates honoured, Karl on site every day, the job wrapped tight and tidy. Your neighbours will watch it happen.</p>
+      </div>
+      <div class="step">
+        <span class="numeral">IV</span>
+        <h4>The Handover</h4>
+        <p>Scaffolding down, floors polished, glass gleaming, keys back in your hand. Moved-in ready, to the day &mdash; then Karl leaves you to enjoy it.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="invite">
+    <p class="invite-note">By appointment &middot; Twelve commissions a year &middot; <span id="openingsNote"></span></p>
+    <a href="#contact">Book a consultation</a>
+  </div>
+  <p class="footnote">Every price is the finished price &mdash; design, structure, glazing, floors, decoration. Everything left moved-in ready.</p>
+</section>
+
+
+
+<section class="guarantee">
+  <div class="g-line"></div>
+  <h2>Ten years. In writing.</h2>
+  <p>Every commission carries Karl&rsquo;s ten-year structural guarantee, on paper, signed. And his number stays the same after the invoice.</p>
+</section>
+
+<section class="appointment" id="contact">
+  <div class="kicker">The Appointment</div>
+  <h2>Request the walk-round.</h2>
+  <p class="note">An hour at your house with Karl. No salesman, no obligation &mdash; and no one else. Karl replies personally, usually the same evening.</p>
+  <form id="apptForm">
+    <input type="text" name="name" placeholder="Your name" required autocomplete="name">
+    <input type="tel" name="phone" placeholder="Phone" required autocomplete="tel">
+    <input type="text" name="postcode" id="pcInput" placeholder="The house&rsquo;s postcode" required autocomplete="postal-code">
+    <p class="pc-whisper" id="pcWhisper" aria-live="polite"></p>
+    <button type="submit">Request an appointment</button>
+  </form>
+</section>
+
+<footer>Karl Gardner &middot; Porthcawl &middot; Built proper. Priced right.</footer>
+
+<script>
+(function () {
+  var HOLD_MS = 6000;
+
+  var CYCLE_DEFS_DESKTOP = [
+    ['./media/01-build.mp4', './media/02-glass-floor.mp4', './media/03-glowup-dusk.mp4'],
+    ['./media/cycle-brick-bronze.mp4'],
+    ['./media/cycle-glass-corner.mp4']
+  ];
+  var CYCLE_DEFS_MOBILE = [
+    ['./media/m/01-build.mp4', './media/m/02-glass-floor.mp4', './media/m/03-glowup-dusk.mp4'],
+    ['./media/m/cycle-brick-bronze.mp4'],
+    ['./media/m/cycle-glass-corner.mp4']
+  ];
+
+  var video = document.getElementById('heroVideo');
+  var freeze = document.getElementById('heroFreeze');
+  var fallback = document.getElementById('heroFallback');
+  if (!video) return;
+
+  var isMobile = window.matchMedia('(max-width: 768px)').matches;
+  var defs = isMobile ? CYCLE_DEFS_MOBILE : CYCLE_DEFS_DESKTOP;
+
+  var cycles = [];
+  var cycleIndex = 0;
+  var clipIndex = 0;
+
+  video.addEventListener('playing', function () {
+    video.__everPlayed = true;
+    video.classList.add('qs-playing');
+  });
+
+  function stillFallback(v) {
+    if (v.__everPlayed || v.__fellBack) return;
+    v.__fellBack = true;
+    var d = document.createElement('div');
+    d.className = 'qs-noplay-still';
+    // Animated WebP: images are exempt from autoplay blocking, so the hero
+    // still moves in Low Power Mode. First tap upgrades to the real clips.
+    d.style.backgroundImage = 'url("./media/hero-fallback.webp")';
+    v.parentElement.insertBefore(d, v);
+    v.style.display = 'none';
+    document.addEventListener('pointerdown', function revive() {
+      document.removeEventListener('pointerdown', revive);
+      v.addEventListener('playing', function once() {
+        v.removeEventListener('playing', once);
+        var still = document.querySelector('.qs-noplay-still');
+        if (still) still.remove();
+      });
+      v.style.display = '';
+      v.__fellBack = false;
+      v.play().catch(function () { v.__fellBack = true; v.style.display = 'none'; });
+    }, { once: false });
+  }
+
+  function exists(url) {
+    if (location.protocol === 'file:') return Promise.resolve(true);
+    return fetch(url, { method: 'HEAD' })
+      .then(function (r) { return r.ok; })
+      .catch(function () { return true; })
+  }
+
+  ['pointerdown', 'touchstart', 'keydown'].forEach(function (evt) {
+    document.addEventListener(evt, function kick() {
+      if (video.__everPlayed || !cycles.length) return;
+      var still = document.querySelector('.qs-noplay-still');
+      if (still) still.remove();
+      video.style.display = '';
+      video.__fellBack = false;
+      if (!video.currentSrc) video.src = cycles[0][0];
+      video.play().catch(function () {});
+    }, { passive: true });
+  });
+
+  Promise.all(defs.map(function (clips) {
+    return Promise.all(clips.map(exists)).then(function (oks) {
+      return clips.filter(function (_, i) { return oks[i]; });
+    });
+  })).then(function (resolved) {
+    cycles = resolved.filter(function (c) { return c.length; });
+    if (!cycles.length) { fallback.classList.add('is-shown'); return; }
+    play();
+    setTimeout(function () { if (!video.__everPlayed) stillFallback(video); }, 1800);
+  });
+
+  function play() {
+    video.src = cycles[cycleIndex][clipIndex];
+    var p = video.play();
+    if (p) p.catch(function () { stillFallback(video); });
+  }
+
+  function showFreeze() {
+    try {
+      freeze.width = video.videoWidth;
+      freeze.height = video.videoHeight;
+      freeze.getContext('2d').drawImage(video, 0, 0);
+      freeze.classList.add('is-shown');
+    } catch (e) { }
+  }
+
+  var holdDeadline = 0;
+
+  function advanceCycle() {
+    holdDeadline = 0;
+    cycleIndex = (cycleIndex + 1) % cycles.length;
+    clipIndex = 0;
+    play();
+    video.addEventListener('playing', function once() {
+      freeze.classList.remove('is-shown');
+      video.removeEventListener('playing', once);
+    });
+  }
+
+  video.addEventListener('ended', function () {
+    clipIndex++;
+    if (clipIndex < cycles[cycleIndex].length) { play(); return; }
+    showFreeze();
+    holdDeadline = performance.now() + HOLD_MS;
+    setTimeout(function () { if (holdDeadline) advanceCycle(); }, HOLD_MS);
+  });
+
+  video.addEventListener('error', function () {
+    video.dispatchEvent(new Event('ended'));
+  });
+
+  setInterval(function () {
+    if (document.hidden || !cycles.length || video.__fellBack) return;
+    if (holdDeadline && performance.now() > holdDeadline + 1000) { advanceCycle(); return; }
+    if (video.paused && !video.ended && !holdDeadline) {
+      video.play().catch(function () {
+        if (!video.muted) {
+          video.muted = true;
+          var t = document.getElementById('soundToggle');
+          if (t) { t.classList.add('is-muted'); t.setAttribute('aria-label', 'Tap for sound'); }
+          video.play().catch(function () {});
+        }
+      });
+    }
+  }, 2000);
+
+  var toggle = document.getElementById('soundToggle');
+  var ambience = document.getElementById('ambience');
+  var RAMP_MS = 300;
+
+  function rampTo(el, target) {
+    var from = el.volume, t0 = performance.now();
+    (function step(now) {
+      var k = Math.min(1, (now - t0) / RAMP_MS);
+      el.volume = from + (target - from) * k;
+      if (k < 1) requestAnimationFrame(step);
+    })(t0);
+  }
+
+  toggle.addEventListener('click', function () {
+    var turningOn = video.muted;
+    if (turningOn) {
+      video.muted = false;
+      ambience.volume = 0;
+      ambience.play().catch(function () {});
+      rampTo(ambience, 0.35);
+      toggle.querySelector('span:last-child').textContent = 'Mute';
+    } else {
+      rampTo(ambience, 0);
+      setTimeout(function () { ambience.pause(); }, RAMP_MS);
+      video.muted = true;
+      toggle.querySelector('span:last-child').textContent = 'Tap for sound';
+    }
+    toggle.classList.toggle('is-muted', video.muted);
+    toggle.setAttribute('aria-label', video.muted ? 'Tap for sound' : 'Mute');
+  });
+
+  // Openings left this year — Lee/Karl updates this one number as jobs book.
+  var OPENINGS_LEFT = 2;
+  var on = document.getElementById('openingsNote');
+  if (on) {
+    on.textContent = OPENINGS_LEFT === 1
+      ? 'One opening left in 2026'
+      : OPENINGS_LEFT + ' openings left in 2026';
+    if (OPENINGS_LEFT === 2) on.textContent = 'Two openings left in 2026';
+  }
+
+  // The postcode whisper — the site recognises its own town.
+  var pcIn = document.getElementById('pcInput');
+  var pcW = document.getElementById('pcWhisper');
+  if (pcIn && pcW) {
+    pcIn.addEventListener('input', function () {
+      var v = pcIn.value.trim().toUpperCase().replace(/\s+/g, '');
+      if (v.indexOf('CF36') === 0) {
+        pcW.textContent = 'CF36 — Karl’s own patch.';
+        pcW.classList.add('is-shown');
+      } else if (/^[A-Z]{1,2}[0-9]/.test(v) && v.length >= 3) {
+        pcW.textContent = 'Beyond Porthcawl — Karl keeps two commissions a year for further afield.';
+        pcW.classList.add('is-shown');
+      } else {
+        pcW.classList.remove('is-shown');
+      }
+    });
+  }
+
+  // Appointment request — opens the visitor's mail app addressed to Karl.
+  // PLACEHOLDER ADDRESS: swap for Karl's real email before deploy.
+  var form = document.getElementById('apptForm');
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var f = new FormData(form);
+      var body = 'Name: ' + f.get('name') + '\nPhone: ' + f.get('phone') +
+                 '\nPostcode: ' + f.get('postcode') +
+                 '\n\nRequesting the walk-round.';
+      location.href = 'mailto:karl@karlgardner.co.uk' +
+        '?subject=' + encodeURIComponent('Commission enquiry — ' + f.get('postcode')) +
+        '&body=' + encodeURIComponent(body);
+    });
+  }
+})();
+</script>
+
+<script src="./reveal.js"></script>
+</body>
+</html>

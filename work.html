@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Work — Karl Gardner, Porthcawl</title>
+<meta name="description" content="Watch a whole Porthcawl house get its glow-up — from tired lean-to to glass, one seamless floor and the sea in view.">
+<meta property="og:title" content="The Work — Karl Gardner, Porthcawl">
+<meta property="og:description" content="Watch a whole Porthcawl house get its glow-up.">
+<meta property="og:image" content="./media/og.jpg">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<div class="page-head">
+  <a href="./index.html">Karl Gardner &middot; Porthcawl</a>
+  <a class="gold" href="./index.html#collection">The Collection</a>
+</div>
+
+<section class="board">
+  <div class="kicker">The work</div>
+  <h2>Watch a whole house get its glow-up.</h2>
+  <p>Every extension starts with an ordinary house and ends with the whole thing transformed — huge sliding glass, one seamless floor flowing from kitchen to patio, and the sea where it belongs: in view.</p>
+
+  <div class="compare" id="compare">
+    <img class="after" src="./media/stills/S3-glowup-dusk.jpg" alt="The same house, finished and glowing at dusk">
+    <div class="before-wrap" id="beforeWrap">
+      <img class="before" src="./media/stills/S0-before.jpg" alt="The same house before — tired lean-to and cracked patio">
+    </div>
+    <div class="handle" id="compareHandle"><span></span></div>
+    <div class="compare-label left">Before</div>
+    <div class="compare-label right">After</div>
+  </div>
+  <p class="compare-hint">Drag the line. Same house.</p>
+
+  <div class="grid">
+    <figure class="card"><img src="./media/stills/S0-before.jpg" alt="The house before — tired lean-to conservatory"><figcaption><span class="tag">Before</span>The house as it was</figcaption></figure>
+    <figure class="card"><img src="./media/stills/S1-shell.jpg" alt="Extension shell built"><figcaption><span class="tag">Stage 1</span>The extension, built</figcaption></figure>
+    <figure class="card"><img src="./media/stills/S2-glass-floor.jpg" alt="Glass in, one floor inside and out"><figcaption><span class="tag">Stage 2</span>Glass in, one floor inside &amp; out</figcaption></figure>
+    <figure class="card"><img src="./media/stills/S3-glowup-dusk.jpg" alt="The whole house renovated, glowing at dusk"><figcaption><span class="tag">Finished</span>The whole house, glowed up</figcaption></figure>
+    <figure class="card"><img src="./media/stills/V1-brick-bronze.jpg" alt="Charcoal brick and bronze glass option"><figcaption><span class="tag">Option</span>Charcoal brick &amp; bronze</figcaption></figure>
+    <figure class="card"><img src="./media/stills/V2-glass-corner.jpg" alt="Frameless glass corner option"><figcaption><span class="tag">Option</span>The frameless glass corner</figcaption></figure>
+  </div>
+</section>
+
+<footer>Karl Gardner &middot; Porthcawl &middot; Built proper. Priced right.</footer>
+
+<script>
+(function () {
+  var box = document.getElementById('compare');
+  var wrap = document.getElementById('beforeWrap');
+  var handle = document.getElementById('compareHandle');
+  if (!box) return;
+  function setX(clientX) {
+    var r = box.getBoundingClientRect();
+    var x = Math.min(Math.max(clientX - r.left, 0), r.width);
+    var pct = (x / r.width) * 100;
+    wrap.style.width = pct + '%';
+    handle.style.left = pct + '%';
+  }
+  var dragging = false;
+  box.addEventListener('pointerdown', function (e) { dragging = true; setX(e.clientX); box.setPointerCapture(e.pointerId); });
+  box.addEventListener('pointermove', function (e) { if (dragging) setX(e.clientX); });
+  ['pointerup', 'pointercancel'].forEach(function (evt) {
+    box.addEventListener(evt, function () { dragging = false; });
+  });
+})();
+</script>
+<script src="./reveal.js"></script>
+</body>
+</html>
