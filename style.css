@@ -88,23 +88,18 @@ video::-webkit-media-controls-overlay-play-button {
 .sound-toggle .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); }
 .sound-toggle.is-muted .dot { background: rgba(247,245,241,.4); }
 
-/* Hero progress — shows the film is still running. Display only, never a control. */
+/* Hero progress — one bar across the whole cycle, so it reads as "more to
+   come" rather than "this clip". Display only, never a control. */
 .hero-progress {
   position: absolute; z-index: 3; left: 0; right: 0; bottom: 0;
-  display: flex; gap: 5px; padding: 0 22px 20px;
+  height: 3px; overflow: hidden;
+  background: rgba(247,245,241,.22);
   pointer-events: none;
 }
-.hero-progress .seg {
-  flex: 1; height: 2px; border-radius: 2px;
-  background: rgba(247,245,241,.28); overflow: hidden;
-}
-.hero-progress .seg i {
+.hero-progress i {
   display: block; height: 100%; width: 0;
   background: var(--gold);
   transition: width .25s linear;
-}
-@media (max-width: 768px) {
-  .hero-progress { padding: 0 14px 14px; }
 }
 
 /* Work page */

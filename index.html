@@ -263,27 +263,20 @@
     } catch (e) { }
   }
 
-  // Segmented progress — one segment per chapter of the running cycle.
+  // One continuous bar across every clip in the running cycle, so a visitor
+  // can see the film is only part-way through and more is coming.
   // Display only: no control surface, pointer-events off, never a play button.
   function buildProgress() {
     if (!progress) return;
-    progress.innerHTML = '';
-    for (var i = 0; i < cycles[cycleIndex].length; i++) {
-      var seg = document.createElement('span');
-      seg.className = 'seg';
-      seg.appendChild(document.createElement('i'));
-      progress.appendChild(seg);
-    }
+    progress.innerHTML = '<i></i>';
   }
 
   function paintProgress() {
-    if (!progress || !progress.children.length) return;
-    for (var i = 0; i < progress.children.length; i++) {
-      var bar = progress.children[i].firstChild;
-      if (i < clipIndex) bar.style.width = '100%';
-      else if (i > clipIndex) bar.style.width = '0%';
-      else bar.style.width = (video.duration ? Math.min(100, (video.currentTime / video.duration) * 100) : 0) + '%';
-    }
+    if (!progress || !progress.firstChild) return;
+    var total = cycles[cycleIndex].length;
+    var within = (video.duration && isFinite(video.duration)) ? video.currentTime / video.duration : 0;
+    var frac = (clipIndex + Math.min(within, 1)) / total;
+    progress.firstChild.style.width = (Math.min(Math.max(frac, 0), 1) * 100) + '%';
   }
 
   video.addEventListener('timeupdate', paintProgress);
