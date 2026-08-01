@@ -25,6 +25,7 @@
   </div>
   <div class="hero-fallback" id="heroFallback"></div>
   <div class="hero-scrim"></div>
+  <div class="hero-progress" id="heroProgress" aria-hidden="true"></div>
 
   <nav class="top-nav">
     <a class="brand" href="./index.html">Karl Gardner &middot; Porthcawl</a>
@@ -232,14 +233,25 @@
   })).then(function (resolved) {
     cycles = resolved.filter(function (c) { return c.length; });
     if (!cycles.length) { fallback.classList.add('is-shown'); return; }
+    buildProgress();
     play();
     setTimeout(function () { if (!video.__everPlayed) stillFallback(video); }, 1800);
   });
 
+  var progress = document.getElementById('heroProgress');
+
   function play() {
     video.src = cycles[cycleIndex][clipIndex];
+    paintProgress();
     var p = video.play();
     if (p) p.catch(function () { stillFallback(video); });
+    // Hold the freeze canvas up until the new clip actually paints. Without
+    // this the element repaints its poster — the tired-house frame — for a
+    // beat at every chapter join.
+    video.addEventListener('playing', function once() {
+      freeze.classList.remove('is-shown');
+      video.removeEventListener('playing', once);
+    });
   }
 
   function showFreeze() {
@@ -251,23 +263,48 @@
     } catch (e) { }
   }
 
+  // Segmented progress — one segment per chapter of the running cycle.
+  // Display only: no control surface, pointer-events off, never a play button.
+  function buildProgress() {
+    if (!progress) return;
+    progress.innerHTML = '';
+    for (var i = 0; i < cycles[cycleIndex].length; i++) {
+      var seg = document.createElement('span');
+      seg.className = 'seg';
+      seg.appendChild(document.createElement('i'));
+      progress.appendChild(seg);
+    }
+  }
+
+  function paintProgress() {
+    if (!progress || !progress.children.length) return;
+    for (var i = 0; i < progress.children.length; i++) {
+      var bar = progress.children[i].firstChild;
+      if (i < clipIndex) bar.style.width = '100%';
+      else if (i > clipIndex) bar.style.width = '0%';
+      else bar.style.width = (video.duration ? Math.min(100, (video.currentTime / video.duration) * 100) : 0) + '%';
+    }
+  }
+
+  video.addEventListener('timeupdate', paintProgress);
+
   var holdDeadline = 0;
 
   function advanceCycle() {
     holdDeadline = 0;
     cycleIndex = (cycleIndex + 1) % cycles.length;
     clipIndex = 0;
+    buildProgress();
     play();
-    video.addEventListener('playing', function once() {
-      freeze.classList.remove('is-shown');
-      video.removeEventListener('playing', once);
-    });
   }
 
   video.addEventListener('ended', function () {
-    clipIndex++;
-    if (clipIndex < cycles[cycleIndex].length) { play(); return; }
+    // Paint the outgoing frame BEFORE the src swap — this is what covers the
+    // load gap, on chapter joins as well as at the end of a cycle.
     showFreeze();
+    clipIndex++;
+    paintProgress();
+    if (clipIndex < cycles[cycleIndex].length) { play(); return; }
     holdDeadline = performance.now() + HOLD_MS;
     setTimeout(function () { if (holdDeadline) advanceCycle(); }, HOLD_MS);
   });
