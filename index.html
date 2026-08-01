@@ -240,18 +240,47 @@
 
   var progress = document.getElementById('heroProgress');
 
+  var metaReady = false;
+
+  // Warm the next clip into cache so a swap has nothing to wait for.
+  var preloader = document.createElement('video');
+  preloader.muted = true;
+  preloader.preload = 'auto';
+  function warmNext() {
+    var nc = cycleIndex, ni = clipIndex + 1;
+    if (ni >= cycles[nc].length) { nc = (nc + 1) % cycles.length; ni = 0; }
+    var url = cycles[nc] && cycles[nc][ni];
+    if (url && preloader.getAttribute('src') !== url) preloader.src = url;
+  }
+
+  video.addEventListener('loadedmetadata', function () { metaReady = true; });
+
   function play() {
+    metaReady = false;
     video.src = cycles[cycleIndex][clipIndex];
     paintProgress();
     var p = video.play();
     if (p) p.catch(function () { stillFallback(video); });
-    // Hold the freeze canvas up until the new clip actually paints. Without
-    // this the element repaints its poster — the tired-house frame — for a
-    // beat at every chapter join.
-    video.addEventListener('playing', function once() {
+
+    // Drop the freeze only once a real frame of the NEW clip has painted.
+    // 'playing' fires before the first frame composites, which is what was
+    // still letting a flash through at the joins.
+    var dropped = false;
+    function drop() {
+      if (dropped) return;
+      dropped = true;
       freeze.classList.remove('is-shown');
-      video.removeEventListener('playing', once);
-    });
+      warmNext();
+    }
+    if (video.requestVideoFrameCallback) {
+      video.requestVideoFrameCallback(drop);
+    } else {
+      video.addEventListener('playing', function once() {
+        video.removeEventListener('playing', once);
+        setTimeout(drop, 90);
+      });
+    }
+    setTimeout(drop, 1500);   // never leave the freeze stuck up
   }
 
   function showFreeze() {
@@ -284,15 +313,31 @@
     return n;
   }
 
+  var lastFrac = 0, paintedPct = -1;
+
   function paintProgress() {
     if (!progress || !progress.firstChild || !cycles.length) return;
     var total = totalClips();
-    var within = (video.duration && isFinite(video.duration)) ? video.currentTime / video.duration : 0;
-    var frac = (clipsBefore(cycleIndex) + clipIndex + Math.min(within, 1)) / total;
-    progress.firstChild.style.width = (Math.min(Math.max(frac, 0), 1) * 100) + '%';
+    // Only count position inside a clip once ITS metadata has loaded. Between
+    // a src swap and 'loadedmetadata' the element can still report the old
+    // clip's currentTime/duration — that stale full-ratio was what made the
+    // bar run ahead and then snap backwards.
+    var within = (metaReady && video.duration && isFinite(video.duration))
+      ? Math.min(video.currentTime / video.duration, 1) : 0;
+    var frac = (clipsBefore(cycleIndex) + clipIndex + within) / total;
+    frac = Math.min(Math.max(frac, 0), 1);
+    // Monotonic: never step backwards except when the whole loop restarts.
+    if (frac < lastFrac && !(lastFrac > 0.95 && frac < 0.15)) frac = lastFrac;
+    lastFrac = frac;
+    var pct = Math.round(frac * 10000) / 100;
+    if (pct !== paintedPct) {
+      paintedPct = pct;
+      progress.firstChild.style.width = pct + '%';
+    }
   }
 
-  video.addEventListener('timeupdate', paintProgress);
+  // Repaint every frame so the bar glides instead of stepping on 'timeupdate'.
+  (function tick() { paintProgress(); requestAnimationFrame(tick); })();
 
   var holdDeadline = 0;
 

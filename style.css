@@ -99,7 +99,7 @@ video::-webkit-media-controls-overlay-play-button {
 .hero-progress i {
   display: block; height: 100%; width: 0;
   background: var(--gold);
-  transition: width .25s linear;
+  /* No transition — a rAF loop drives the width, so easing would only lag. */
 }
 
 /* Commission No. 1 — a real Karl Gardner job, on the Work page */
