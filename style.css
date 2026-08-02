@@ -520,6 +520,18 @@ a.model { display: block; color: inherit; text-decoration: none; }
   transition: opacity .35s ease, transform .35s ease;
 }
 .sticky-cta.is-shown { opacity: 1; transform: none; pointer-events: auto; }
+/* Karl's return chip — the same gold, with a soft pulse so it catches the
+   eye once without ever moving or blocking anything. */
+.sticky-cta.is-lee::before { content: '\2190\00a0'; }
+.sticky-cta.is-lee.is-shown { animation: cta-notice 2.6s ease-out 1 both; }
+@keyframes cta-notice {
+  0%   { box-shadow: inset 0 1px 0 rgba(255,242,205,.42), inset 0 -1px 0 rgba(0,0,0,.30), 0 8px 22px rgba(0,0,0,.5), 0 0 0 0 rgba(201,162,75,.55); }
+  55%  { box-shadow: inset 0 1px 0 rgba(255,242,205,.42), inset 0 -1px 0 rgba(0,0,0,.30), 0 8px 22px rgba(0,0,0,.5), 0 0 0 14px rgba(201,162,75,0); }
+  100% { box-shadow: inset 0 1px 0 rgba(255,242,205,.42), inset 0 -1px 0 rgba(0,0,0,.30), 0 8px 22px rgba(0,0,0,.5), 0 0 0 0 rgba(201,162,75,0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sticky-cta.is-lee.is-shown { animation: none; }
+}
 .sticky-cta:active { transform: translateY(1px); }
 .sticky-cta:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
 @media (max-width: 560px) {
