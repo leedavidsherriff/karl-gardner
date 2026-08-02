@@ -253,7 +253,13 @@
     if (url && preloader.getAttribute('src') !== url) preloader.src = url;
   }
 
-  video.addEventListener('loadedmetadata', function () { metaReady = true; });
+  video.addEventListener('loadedmetadata', function () {
+    metaReady = true;
+    // Cache the real length so the bar's clock is exact from the second loop.
+    if (video.duration && isFinite(video.duration)) {
+      durations[key(cycleIndex, clipIndex)] = video.duration * 1000;
+    }
+  });
 
   function play() {
     metaReady = false;
@@ -301,30 +307,45 @@
     progress.innerHTML = '<i></i>';
   }
 
-  function totalClips() {
-    var n = 0;
-    for (var i = 0; i < cycles.length; i++) n += cycles[i].length;
-    return n;
+  // The bar measures TIME through the whole loop — every clip plus every hold
+  // — not "which clip are we on". That is what keeps it moving during the
+  // holds and the load gaps instead of stalling at a boundary.
+  var DEFAULT_CLIP_MS = 12000;   // until a clip reports its real duration
+  var durations = {};            // "cycle:clip" -> ms, filled from metadata
+  var holdStartedAt = 0;
+
+  function key(c, i) { return c + ':' + i; }
+  function durOf(c, i) { return durations[key(c, i)] || DEFAULT_CLIP_MS; }
+
+  function loopTotalMs() {
+    var t = 0;
+    for (var c = 0; c < cycles.length; c++) {
+      for (var i = 0; i < cycles[c].length; i++) t += durOf(c, i);
+      t += HOLD_MS;                       // each cycle ends on a hold
+    }
+    return t || 1;
   }
 
-  function clipsBefore(ci) {
-    var n = 0;
-    for (var i = 0; i < ci; i++) n += cycles[i].length;
-    return n;
+  function loopElapsedMs() {
+    var t = 0, c, i;
+    for (c = 0; c < cycleIndex; c++) {
+      for (i = 0; i < cycles[c].length; i++) t += durOf(c, i);
+      t += HOLD_MS;
+    }
+    for (i = 0; i < clipIndex; i++) t += durOf(cycleIndex, i);
+    if (holdStartedAt) {
+      t += Math.min(performance.now() - holdStartedAt, HOLD_MS);
+    } else if (metaReady && video.duration && isFinite(video.duration)) {
+      t += Math.min(video.currentTime, video.duration) * 1000;
+    }
+    return t;
   }
 
   var lastFrac = 0, paintedPct = -1;
 
   function paintProgress() {
     if (!progress || !progress.firstChild || !cycles.length) return;
-    var total = totalClips();
-    // Only count position inside a clip once ITS metadata has loaded. Between
-    // a src swap and 'loadedmetadata' the element can still report the old
-    // clip's currentTime/duration — that stale full-ratio was what made the
-    // bar run ahead and then snap backwards.
-    var within = (metaReady && video.duration && isFinite(video.duration))
-      ? Math.min(video.currentTime / video.duration, 1) : 0;
-    var frac = (clipsBefore(cycleIndex) + clipIndex + within) / total;
+    var frac = loopElapsedMs() / loopTotalMs();
     frac = Math.min(Math.max(frac, 0), 1);
     // Monotonic: never step backwards except when the whole loop restarts.
     if (frac < lastFrac && !(lastFrac > 0.95 && frac < 0.15)) frac = lastFrac;
@@ -343,6 +364,7 @@
 
   function advanceCycle() {
     holdDeadline = 0;
+    holdStartedAt = 0;
     cycleIndex = (cycleIndex + 1) % cycles.length;
     clipIndex = 0;
     // Deliberately no rebuild — the bar runs continuously across all cycles
@@ -357,6 +379,8 @@
     clipIndex++;
     paintProgress();
     if (clipIndex < cycles[cycleIndex].length) { play(); return; }
+    // Hold on the finished frame — the bar keeps travelling through it.
+    holdStartedAt = performance.now();
     holdDeadline = performance.now() + HOLD_MS;
     setTimeout(function () { if (holdDeadline) advanceCycle(); }, HOLD_MS);
   });
