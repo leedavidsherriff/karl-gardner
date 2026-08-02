@@ -69,12 +69,27 @@ video::-webkit-media-controls-overlay-play-button {
   line-height: 1.5; color: rgba(247,245,241,.92); max-width: 44ch;
   text-shadow: 0 1px 12px rgba(0,0,0,.5);
 }
+/* Gold leaf, stamped — same foil as the wax-sealed card. */
 .btn {
   display: inline-block; margin-top: 32px; align-self: flex-start;
-  background: var(--gold); color: #1a1408;
+  background: url('./media/foil.jpg') center/cover no-repeat, var(--gold);
+  color: #1a1408;
   padding: 15px 34px; font-size: 15px; font-weight: 700;
   letter-spacing: .06em; text-transform: uppercase; text-decoration: none;
   border-radius: 2px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,242,205,.42),
+    inset 0 -1px 0 rgba(0,0,0,.30),
+    0 8px 22px rgba(0,0,0,.45);
+  text-shadow: 0 1px 0 rgba(255,240,200,.28);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.btn:active {
+  transform: translateY(1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,242,205,.30),
+    inset 0 -1px 0 rgba(0,0,0,.34),
+    0 4px 12px rgba(0,0,0,.4);
 }
 .sound-toggle {
   position: absolute; z-index: 3; right: 24px; bottom: 24px;
@@ -267,7 +282,7 @@ video::-webkit-media-controls-overlay-play-button {
   padding: 16px 40px; border: 1px solid rgba(201,162,75,.55);
   transition: background .3s ease, color .3s ease;
 }
-.collection .invite a:hover { background: var(--gold); color: #1a1408; }
+.collection .invite a:hover { background: url('./media/foil.jpg') center/cover no-repeat, var(--gold); color: #1a1408; }
 .collection .footnote {
   margin-top: 26px; text-align: center;
   color: rgba(247,245,241,.35); font-size: 12.5px; letter-spacing: .04em;
@@ -337,7 +352,7 @@ a.model { display: block; color: inherit; text-decoration: none; }
   padding: 16px 40px; border: 1px solid rgba(201,162,75,.55);
   transition: background .3s ease, color .3s ease;
 }
-.model-detail .invite a:hover { background: var(--gold); color: #1a1408; }
+.model-detail .invite a:hover { background: url('./media/foil.jpg') center/cover no-repeat, var(--gold); color: #1a1408; }
 
 /* Words from the Twelve */
 .quotes {
@@ -412,10 +427,24 @@ a.model { display: block; color: inherit; text-decoration: none; }
 .appointment input:focus { outline: none; border-color: rgba(201,162,75,.7); }
 .appointment button {
   margin-top: 12px; cursor: pointer;
-  background: var(--gold); border: none; color: #1a1408;
+  background: url('./media/foil.jpg') center/cover no-repeat, var(--gold);
+  border: none; color: #1a1408;
   padding: 16px; font-size: 13px; font-weight: 700;
   letter-spacing: .22em; text-transform: uppercase; border-radius: 2px;
   font-family: inherit;
+  box-shadow:
+    inset 0 1px 0 rgba(255,242,205,.42),
+    inset 0 -1px 0 rgba(0,0,0,.30),
+    0 8px 22px rgba(0,0,0,.45);
+  text-shadow: 0 1px 0 rgba(255,240,200,.28);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.appointment button:active {
+  transform: translateY(1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,242,205,.30),
+    inset 0 -1px 0 rgba(0,0,0,.34),
+    0 4px 12px rgba(0,0,0,.4);
 }
 
 /* Before / after compare */
