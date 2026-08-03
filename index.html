@@ -154,7 +154,10 @@
 
 <script>
 (function () {
-  var HOLD_MS = 6000;
+  // Dwell on the finished house before the next transformation starts.
+  // Measured: chapter joins cost ~55ms, so this number IS the whole pause.
+  // 6s read as dead air; 3s still lets the result land.
+  var HOLD_MS = 3000;
 
   var CYCLE_DEFS_DESKTOP = [
     ['./media/01-build.mp4', './media/02-glass-floor.mp4', './media/03-glowup-dusk.mp4'],
