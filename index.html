@@ -185,6 +185,10 @@
   video.addEventListener('playing', function () {
     video.__everPlayed = true;
     video.classList.add('qs-playing');
+    // Once film is running, drop the poster. If the freeze canvas ever fails
+    // to cover a swap, a black frame is far less jarring than a bright
+    // finished-house still appearing mid-transformation.
+    if (video.hasAttribute('poster')) video.removeAttribute('poster');
   });
 
   function stillFallback(v) {
@@ -483,5 +487,6 @@
 
 <script src="./reveal.js"></script>
 <script src="./sticky-cta.js"></script>
+<script src="./letter-glow.js"></script>
 </body>
 </html>
