@@ -247,8 +247,6 @@
 
   var progress = document.getElementById('heroProgress');
 
-  var metaReady = false;
-
   // Warm the next clip into cache so a swap has nothing to wait for.
   var preloader = document.createElement('video');
   preloader.muted = true;
@@ -260,18 +258,11 @@
     if (url && preloader.getAttribute('src') !== url) preloader.src = url;
   }
 
-  video.addEventListener('loadedmetadata', function () {
-    metaReady = true;
-    // Cache the real length so the bar's clock is exact from the second loop.
-    if (video.duration && isFinite(video.duration)) {
-      durations[key(cycleIndex, clipIndex)] = video.duration * 1000;
-    }
-  });
-
   function play() {
-    metaReady = false;
-    video.src = cycles[cycleIndex][clipIndex];
-    paintProgress();
+    seq++;                    // any pending hold timer is now stale
+    holdDeadline = 0;
+    var c = cycleIndex, i = clipIndex;
+    video.src = cycles[c][i];
     var p = video.play();
     if (p) p.catch(function () { stillFallback(video); });
 
@@ -283,6 +274,9 @@
       if (dropped) return;
       dropped = true;
       freeze.classList.remove('is-shown');
+      // Re-anchor the bar's clock to this clip's planned position, capped at
+      // the clip's planned end so a stall can never push the bar ahead.
+      syncBar(offsetOf(c, i), offsetOf(c, i) + clipMs(c, i));
       warmNext();
     }
     if (video.requestVideoFrameCallback) {
@@ -314,64 +308,63 @@
     progress.innerHTML = '<i></i>';
   }
 
-  // The bar measures TIME through the whole loop — every clip plus every hold
-  // — not "which clip are we on". That is what keeps it moving during the
-  // holds and the load gaps instead of stalling at a boundary.
-  var DEFAULT_CLIP_MS = 12000;   // until a clip reports its real duration
-  var durations = {};            // "cycle:clip" -> ms, filled from metadata
-  var holdStartedAt = 0;
-
-  function key(c, i) { return c + ':' + i; }
-  function durOf(c, i) { return durations[key(c, i)] || DEFAULT_CLIP_MS; }
-
+  // The bar is its OWN clock. It knows the exact length of every clip and
+  // every hold up front, advances on wall time via rAF, and only re-anchors
+  // at clip boundaries. It never reads the video's clock, so nothing the
+  // video does — loading, buffering, swapping — can make it stutter.
+  var CLIP_MS = {
+    '01-build.mp4': 12097,
+    '02-glass-floor.mp4': 12051,
+    '03-glowup-dusk.mp4': 12051,
+    'cycle-brick-bronze.mp4': 12051,
+    'cycle-glass-corner.mp4': 12051
+  };
+  function clipMs(c, i) {
+    return CLIP_MS[cycles[c][i].split('/').pop()] || 12000;
+  }
   function loopTotalMs() {
     var t = 0;
     for (var c = 0; c < cycles.length; c++) {
-      for (var i = 0; i < cycles[c].length; i++) t += durOf(c, i);
-      t += HOLD_MS;                       // each cycle ends on a hold
+      for (var i = 0; i < cycles[c].length; i++) t += clipMs(c, i);
+      t += HOLD_MS;
     }
     return t || 1;
   }
-
-  function loopElapsedMs() {
+  function offsetOf(c0, i0) {   // planned ms into the loop at clip (c0,i0)
     var t = 0, c, i;
-    for (c = 0; c < cycleIndex; c++) {
-      for (i = 0; i < cycles[c].length; i++) t += durOf(c, i);
+    for (c = 0; c < c0; c++) {
+      for (i = 0; i < cycles[c].length; i++) t += clipMs(c, i);
       t += HOLD_MS;
     }
-    for (i = 0; i < clipIndex; i++) t += durOf(cycleIndex, i);
-    if (holdStartedAt) {
-      t += Math.min(performance.now() - holdStartedAt, HOLD_MS);
-    } else if (metaReady && video.duration && isFinite(video.duration)) {
-      t += Math.min(video.currentTime, video.duration) * 1000;
-    }
+    for (i = 0; i < i0; i++) t += clipMs(c0, i);
     return t;
   }
 
-  var lastFrac = 0, paintedPct = -1;
-
-  function paintProgress() {
-    if (!progress || !progress.firstChild || !cycles.length) return;
-    var frac = loopElapsedMs() / loopTotalMs();
-    frac = Math.min(Math.max(frac, 0), 1);
-    // Monotonic: never step backwards except when the whole loop restarts.
-    if (frac < lastFrac && !(lastFrac > 0.95 && frac < 0.15)) frac = lastFrac;
-    lastFrac = frac;
-    var pct = Math.round(frac * 10000) / 100;
-    if (pct !== paintedPct) {
-      paintedPct = pct;
-      progress.firstChild.style.width = pct + '%';
-    }
+  // anchor: "at anchorTime the loop stood at anchorMs". cap: how far the bar
+  // may run before the next boundary confirms — if a clip stalls, the bar
+  // waits at the boundary rather than running ahead and snapping back.
+  var bar = { anchorTime: 0, anchorMs: 0, capMs: 0 };
+  function syncBar(atMs, capMs) {
+    bar.anchorTime = performance.now();
+    bar.anchorMs = atMs;
+    bar.capMs = capMs;
   }
 
-  // Repaint every frame so the bar glides instead of stepping on 'timeupdate'.
-  (function tick() { paintProgress(); requestAnimationFrame(tick); })();
+  (function paintBar() {
+    if (progress && progress.firstChild && cycles.length && bar.anchorTime) {
+      var elapsed = bar.anchorMs + (performance.now() - bar.anchorTime);
+      if (elapsed > bar.capMs) elapsed = bar.capMs;
+      var pct = Math.min(elapsed / loopTotalMs(), 1) * 100;
+      progress.firstChild.style.width = pct + '%';
+    }
+    requestAnimationFrame(paintBar);
+  })();
 
   var holdDeadline = 0;
+  var seq = 0;   // bumps on every transition; stale hold timers check it and die
 
   function advanceCycle() {
     holdDeadline = 0;
-    holdStartedAt = 0;
     cycleIndex = (cycleIndex + 1) % cycles.length;
     clipIndex = 0;
     // Deliberately no rebuild — the bar runs continuously across all cycles
@@ -384,15 +377,24 @@
     // load gap, on chapter joins as well as at the end of a cycle.
     showFreeze();
     clipIndex++;
-    paintProgress();
     if (clipIndex < cycles[cycleIndex].length) { play(); return; }
-    // Hold on the finished frame — the bar keeps travelling through it.
-    holdStartedAt = performance.now();
+    // Hold on the finished frame — the bar travels through it on wall time,
+    // capped at the hold's planned end.
+    var lastClip = cycles[cycleIndex].length - 1;
+    var holdStart = offsetOf(cycleIndex, lastClip) + clipMs(cycleIndex, lastClip);
+    syncBar(holdStart, holdStart + HOLD_MS);
     holdDeadline = performance.now() + HOLD_MS;
-    setTimeout(function () { if (holdDeadline) advanceCycle(); }, HOLD_MS);
+    var s = ++seq;   // this hold's ticket — dies if anything else advances first
+    setTimeout(function () { if (seq === s && holdDeadline) advanceCycle(); }, HOLD_MS);
   });
 
   video.addEventListener('error', function () {
+    // Swapping src aborts the outgoing clip's load, and that abort surfaces
+    // here as an error event. Treating it as 'ended' advanced the rotation
+    // once per join, firing cycles out of order — the brick clip kept
+    // cutting back in. Only a genuine decode/network failure skips a clip.
+    var err = video.error;
+    if (!err || err.code === 1 /* MEDIA_ERR_ABORTED */) return;
     video.dispatchEvent(new Event('ended'));
   });
 
