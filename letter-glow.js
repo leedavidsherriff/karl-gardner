@@ -89,9 +89,17 @@
       var n = t.chars.length;
       var head = p * (n + SPREAD);
       for (var c = 0; c < n; c++) {
+        var ch = t.chars[c];
         var lit = (head - c) / SPREAD;
         lit = lit < 0 ? 0 : lit > 1 ? 1 : lit;
-        t.chars[c].style.opacity = (DIM + (1 - DIM) * lit).toFixed(3);
+        ch.style.opacity = (DIM + (1 - DIM) * lit).toFixed(3);
+        // The leading edge of the sweep carries gold light, which settles
+        // back into the text's own colour once the letter is fully lit.
+        var hot = lit > 0.08 && lit < 0.92;
+        if (hot !== ch.__hot) {
+          ch.__hot = hot;
+          ch.classList.toggle('lg-hot', hot);
+        }
       }
     }
     requestAnimationFrame(paint);
